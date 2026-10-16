@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
-import Hls from 'hls.js';
 
 export default function Home() {
   const [channels, setChannels] = useState([]);
@@ -12,6 +11,13 @@ export default function Home() {
 
   useEffect(() => {
     fetchChannels();
+    // Load hls.js from CDN dynamically
+    if (!window.Hls) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }, []);
 
   async function fetchChannels() {
@@ -38,7 +44,7 @@ export default function Home() {
     return null;
   };
 
-  const playChannel = async (channel) => {
+  const playChannel = (channel) => {
     setCurrentStream(channel);
     
     if (channel.group_id) {
@@ -48,7 +54,7 @@ export default function Home() {
       setMultiServers([]);
     }
 
-    let url = channel.stream_url;
+    const url = channel.stream_url;
     const ytUrl = getYoutubeEmbedUrl(url);
 
     if (!ytUrl && videoRef.current) {
@@ -57,47 +63,21 @@ export default function Home() {
       video.removeAttribute('src');
       video.load();
 
-      // HLS Stream Play Logic
-      if (Hls.isSupported() && (url.includes('.m3u8') || !url.includes('.mpd'))) {
-        const hls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-          manifestLoadingTimeOut: 10000,
-        });
-
-        hls.loadSource(url);
-        hls.attachMedia(video);
-
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.muted = false;
-          video.play().catch(() => {
-            // If autoplay with sound is blocked, try muted
-            video.muted = true;
-            video.play();
+      if (url.includes('.m3u8')) {
+        if (window.Hls && window.Hls.isSupported()) {
+          const hls = new window.Hls();
+          hls.loadSource(url);
+          hls.attachMedia(video);
+          hls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+            video.play().catch(e => console.log("Autoplay prevented:", e));
           });
-        });
-
-        hls.on(Hls.Events.ERROR, (event, data) => {
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                hls.recoverMediaError();
-                break;
-              default:
-                hls.destroy();
-                break;
-            }
-          }
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = url;
-        video.play();
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = url;
+          video.play();
+        }
       } else {
         video.src = url;
-        video.play();
+        video.play().catch(e => console.log("Autoplay prevented:", e));
       }
     }
   };
@@ -295,5 +275,4 @@ export default function Home() {
       </main>
     </div>
   );
-      }
-      
+}
