@@ -50,23 +50,60 @@ export default function Home() {
 
     const url = channel.stream_url;
 
-    if (videoRef.current) {
-      videoRef.current.src = '';
-    }
-
     const ytUrl = getYoutubeEmbedUrl(url);
 
     if (!ytUrl && videoRef.current) {
+      // Clear Previous Stream
+      videoRef.current.pause();
+      videoRef.current.removeAttribute('src');
+      videoRef.current.load();
+
+      // DASH Stream (.mpd)
       if (url.includes('.mpd')) {
         const dashjs = (await import('dashjs')).default;
         const player = dashjs.MediaPlayer().create();
         player.initialize(videoRef.current, url, true);
-      } else if (url.includes('.m3u8') && Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(videoRef.current);
-      } else {
+      } 
+      // HLS Stream (.m3u8) with High Compatibility
+      else if (url.includes('.m3u8')) {
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: true,
+            backBufferLength: 90
+          });
+
+          hls.loadSource(url);
+          hls.attachMedia(videoRef.current);
+          hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            videoRef.current.play().catch(() => console.log('Autoplay blocked'));
+          });
+
+          // Fallback Error Handler
+          hls.on(Hls.Events.ERROR, function (event, data) {
+            if (data.fatal) {
+              switch (data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  hls.startLoad();
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  hls.recoverMediaError();
+                  break;
+                default:
+                  hls.destroy();
+                  break;
+              }
+            }
+          });
+        } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+          videoRef.current.src = url;
+          videoRef.current.play();
+        }
+      } 
+      // Direct Native Play
+      else {
         videoRef.current.src = url;
+        videoRef.current.play();
       }
     }
   };
@@ -121,6 +158,7 @@ export default function Home() {
                   ref={videoRef} 
                   controls 
                   autoPlay 
+                  playsInline
                   className="w-full h-full object-contain"
                 ></video>
               )
