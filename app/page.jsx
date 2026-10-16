@@ -49,40 +49,35 @@ export default function Home() {
     }
 
     let url = channel.stream_url;
-
     const ytUrl = getYoutubeEmbedUrl(url);
 
     if (!ytUrl && videoRef.current) {
-      // Clear Previous Stream
-      videoRef.current.pause();
-      videoRef.current.removeAttribute('src');
-      videoRef.current.load();
+      const video = videoRef.current;
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
 
-      // Bypass CORS for Protected HLS Links
-      if (url.includes('.m3u8') && !url.includes('corsproxy.io')) {
-        url = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-      }
-
-      // DASH Stream (.mpd)
-      if (url.includes('.mpd')) {
-        const dashjs = (await import('dashjs')).default;
-        const player = dashjs.MediaPlayer().create();
-        player.initialize(videoRef.current, url, true);
-      } 
-      // HLS Stream (.m3u8)
-      else if (Hls.isSupported()) {
+      // HLS Stream Play Logic
+      if (Hls.isSupported() && (url.includes('.m3u8') || !url.includes('.mpd'))) {
         const hls = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
+          manifestLoadingTimeOut: 10000,
         });
 
         hls.loadSource(url);
-        hls.attachMedia(videoRef.current);
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
-          videoRef.current.play().catch(() => console.log('Autoplay blocked'));
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.muted = false;
+          video.play().catch(() => {
+            // If autoplay with sound is blocked, try muted
+            video.muted = true;
+            video.play();
+          });
         });
 
-        hls.on(Hls.Events.ERROR, function (event, data) {
+        hls.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
             switch (data.type) {
               case Hls.ErrorTypes.NETWORK_ERROR:
@@ -97,14 +92,12 @@ export default function Home() {
             }
           }
         });
-      } 
-      else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-        videoRef.current.src = url;
-        videoRef.current.play();
-      }
-      else {
-        videoRef.current.src = url;
-        videoRef.current.play();
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.play();
+      } else {
+        video.src = url;
+        video.play();
       }
     }
   };
@@ -120,10 +113,10 @@ export default function Home() {
   return (
     <div className="bg-[#0b0e14] text-white min-h-screen font-sans selection:bg-red-600">
       
-      {/* TOP NAVBAR */}
+      {/* NAVBAR */}
       <header className="sticky top-0 z-50 bg-[#0b0e14]/90 backdrop-blur-md border-b border-gray-800/60 px-4 md:px-8 py-3.5 flex justify-between items-center shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-red-600 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-red-600/40 tracking-tighter">
+          <div className="w-9 h-9 bg-red-600 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-red-600/40">
             B
           </div>
           <span className="text-2xl font-extrabold tracking-wider bg-gradient-to-r from-red-500 via-orange-400 to-white bg-clip-text text-transparent">
@@ -143,9 +136,9 @@ export default function Home() {
 
       <main className="max-w-7xl mx-auto px-4 md:px-6 pt-6 pb-24 space-y-8">
 
-        {/* MAIN PLAYER SECTION */}
+        {/* PLAYER SECTION */}
         <section className="bg-gradient-to-b from-gray-900 to-[#0f141d] border border-gray-800/80 rounded-2xl overflow-hidden shadow-2xl">
-          <div className="relative aspect-video w-full bg-black flex items-center justify-center overflow-hidden group">
+          <div className="relative aspect-video w-full bg-black flex items-center justify-center overflow-hidden">
             {currentStream ? (
               ytEmbedUrl ? (
                 <iframe
@@ -158,7 +151,6 @@ export default function Home() {
                 <video 
                   ref={videoRef} 
                   controls 
-                  autoPlay 
                   playsInline
                   className="w-full h-full object-contain"
                 ></video>
@@ -187,7 +179,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Multi-Server Selection */}
+              {/* Multi-Server Buttons */}
               {multiServers.length > 1 && (
                 <div className="flex items-center gap-2 bg-gray-900/80 p-2 rounded-xl border border-gray-800 w-full md:w-auto overflow-x-auto">
                   <span className="text-xs text-gray-400 font-bold px-1 whitespace-nowrap">Servers:</span>
@@ -221,15 +213,15 @@ export default function Home() {
                 <div 
                   key={item.id} 
                   onClick={() => playChannel(item)}
-                  className="group relative bg-gradient-to-br from-red-950/40 via-gray-900 to-[#0f141d] p-4 rounded-xl border border-red-500/30 hover:border-red-500 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-red-600/20"
+                  className="group relative bg-gradient-to-br from-red-950/40 via-gray-900 to-[#0f141d] p-4 rounded-xl border border-red-500/30 hover:border-red-500 cursor-pointer transition-all duration-300 shadow-lg"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <span className="bg-red-600 text-[10px] font-black uppercase px-2 py-0.5 rounded text-white tracking-widest shadow">
+                    <span className="bg-red-600 text-[10px] font-black uppercase px-2 py-0.5 rounded text-white shadow">
                       HOT EVENT
                     </span>
                     <span className="text-xs font-bold text-gray-400">#{item.serial_no}</span>
                   </div>
-                  <h4 className="font-bold text-base text-white group-hover:text-red-400 transition truncate">{item.name}</h4>
+                  <h4 className="font-bold text-base text-white group-hover:text-red-400 truncate">{item.name}</h4>
                   <p className="text-xs text-gray-400 mt-1">Multi-Server Supported</p>
                 </div>
               ))}
@@ -240,15 +232,15 @@ export default function Home() {
         {/* FOLDERS */}
         <section className="space-y-3">
           <h3 className="text-sm font-bold text-gray-400 tracking-wider uppercase">Select Language / Category Folder:</h3>
-          <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-none scroll-smooth">
+          <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-none">
             {languages.map((lang) => (
               <button
                 key={lang}
                 onClick={() => setSelectedLanguage(lang)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
                   selectedLanguage === lang 
-                    ? 'bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30' 
-                    : 'bg-gray-900/90 border-gray-800 text-gray-300 hover:bg-gray-800 hover:text-white'
+                    ? 'bg-red-600 border-red-500 text-white shadow-lg' 
+                    : 'bg-gray-900/90 border-gray-800 text-gray-300 hover:bg-gray-800'
                 }`}
               >
                 📁 {lang}
@@ -269,28 +261,27 @@ export default function Home() {
               <div
                 key={channel.id}
                 onClick={() => playChannel(channel)}
-                tabIndex={0}
-                className="group relative bg-gradient-to-b from-gray-900 to-[#0e121a] border border-gray-800/90 rounded-2xl p-3 cursor-pointer transition-all duration-200 hover:border-red-500 focus:border-red-500 focus:outline-none hover:-translate-y-1 shadow-md hover:shadow-red-600/20 flex flex-col items-center text-center"
+                className="group relative bg-gradient-to-b from-gray-900 to-[#0e121a] border border-gray-800/90 rounded-2xl p-3 cursor-pointer transition-all hover:border-red-500 shadow-md flex flex-col items-center text-center"
               >
-                <span className="absolute top-2 left-2 bg-black/80 backdrop-blur-md text-red-400 font-extrabold text-[10px] px-2 py-0.5 rounded-md border border-gray-800 z-10">
+                <span className="absolute top-2 left-2 bg-black/80 text-red-400 font-extrabold text-[10px] px-2 py-0.5 rounded-md border border-gray-800 z-10">
                   #{channel.serial_no}
                 </span>
 
-                <div className="w-full h-28 bg-black/40 rounded-xl flex items-center justify-center p-2 mb-3 border border-gray-800/50 group-hover:border-red-500/40 transition">
+                <div className="w-full h-28 bg-black/40 rounded-xl flex items-center justify-center p-2 mb-3 border border-gray-800/50">
                   {channel.logo_url ? (
                     <img 
                       src={channel.logo_url} 
                       alt={channel.name} 
-                      className="max-h-20 max-w-full object-contain group-hover:scale-105 transition duration-300"
+                      className="max-h-20 max-w-full object-contain"
                     />
                   ) : (
-                    <span className="text-3xl font-black text-gray-700 group-hover:text-red-500 transition">
+                    <span className="text-3xl font-black text-gray-700">
                       {channel.name[0]}
                     </span>
                   )}
                 </div>
 
-                <h4 className="text-sm font-semibold text-gray-200 group-hover:text-red-400 transition truncate w-full">
+                <h4 className="text-sm font-semibold text-gray-200 group-hover:text-red-400 truncate w-full">
                   {channel.name}
                 </h4>
                 <p className="text-[11px] text-gray-500 font-medium truncate w-full mt-0.5">
@@ -304,5 +295,5 @@ export default function Home() {
       </main>
     </div>
   );
-          }
-                
+      }
+      
