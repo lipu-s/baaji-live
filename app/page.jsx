@@ -48,7 +48,7 @@ export default function Home() {
       setMultiServers([]);
     }
 
-    const url = channel.stream_url;
+    let url = channel.stream_url;
 
     const ytUrl = getYoutubeEmbedUrl(url);
 
@@ -58,49 +58,50 @@ export default function Home() {
       videoRef.current.removeAttribute('src');
       videoRef.current.load();
 
+      // Bypass CORS for Protected HLS Links
+      if (url.includes('.m3u8') && !url.includes('corsproxy.io')) {
+        url = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+      }
+
       // DASH Stream (.mpd)
       if (url.includes('.mpd')) {
         const dashjs = (await import('dashjs')).default;
         const player = dashjs.MediaPlayer().create();
         player.initialize(videoRef.current, url, true);
       } 
-      // HLS Stream (.m3u8) with High Compatibility
-      else if (url.includes('.m3u8')) {
-        if (Hls.isSupported()) {
-          const hls = new Hls({
-            enableWorker: true,
-            lowLatencyMode: true,
-            backBufferLength: 90
-          });
+      // HLS Stream (.m3u8)
+      else if (Hls.isSupported()) {
+        const hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+        });
 
-          hls.loadSource(url);
-          hls.attachMedia(videoRef.current);
-          hls.on(Hls.Events.MANIFEST_PARSED, function() {
-            videoRef.current.play().catch(() => console.log('Autoplay blocked'));
-          });
+        hls.loadSource(url);
+        hls.attachMedia(videoRef.current);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          videoRef.current.play().catch(() => console.log('Autoplay blocked'));
+        });
 
-          // Fallback Error Handler
-          hls.on(Hls.Events.ERROR, function (event, data) {
-            if (data.fatal) {
-              switch (data.type) {
-                case Hls.ErrorTypes.NETWORK_ERROR:
-                  hls.startLoad();
-                  break;
-                case Hls.ErrorTypes.MEDIA_ERROR:
-                  hls.recoverMediaError();
-                  break;
-                default:
-                  hls.destroy();
-                  break;
-              }
+        hls.on(Hls.Events.ERROR, function (event, data) {
+          if (data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hls.recoverMediaError();
+                break;
+              default:
+                hls.destroy();
+                break;
             }
-          });
-        } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-          videoRef.current.src = url;
-          videoRef.current.play();
-        }
+          }
+        });
       } 
-      // Direct Native Play
+      else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+        videoRef.current.src = url;
+        videoRef.current.play();
+      }
       else {
         videoRef.current.src = url;
         videoRef.current.play();
@@ -119,7 +120,7 @@ export default function Home() {
   return (
     <div className="bg-[#0b0e14] text-white min-h-screen font-sans selection:bg-red-600">
       
-      {/* 1. TOP NAVBAR */}
+      {/* TOP NAVBAR */}
       <header className="sticky top-0 z-50 bg-[#0b0e14]/90 backdrop-blur-md border-b border-gray-800/60 px-4 md:px-8 py-3.5 flex justify-between items-center shadow-lg">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-red-600 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-red-600/40 tracking-tighter">
@@ -142,7 +143,7 @@ export default function Home() {
 
       <main className="max-w-7xl mx-auto px-4 md:px-6 pt-6 pb-24 space-y-8">
 
-        {/* 2. MAIN PLAYER SECTION */}
+        {/* MAIN PLAYER SECTION */}
         <section className="bg-gradient-to-b from-gray-900 to-[#0f141d] border border-gray-800/80 rounded-2xl overflow-hidden shadow-2xl">
           <div className="relative aspect-video w-full bg-black flex items-center justify-center overflow-hidden group">
             {currentStream ? (
@@ -173,7 +174,7 @@ export default function Home() {
             )}
           </div>
 
-          {/* Player Stream Details & Server Switcher */}
+          {/* Details Bar */}
           {currentStream && (
             <div className="p-4 md:p-5 bg-[#0f141d] border-t border-gray-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div className="flex items-center gap-3">
@@ -209,7 +210,7 @@ export default function Home() {
           )}
         </section>
 
-        {/* 3. HIGHLIGHTED / HOT EVENTS SECTION */}
+        {/* HIGHLIGHTED EVENTS */}
         {highlighted.length > 0 && (
           <section className="space-y-3">
             <h3 className="text-lg font-bold text-yellow-400 flex items-center gap-2 tracking-wide">
@@ -236,7 +237,7 @@ export default function Home() {
           </section>
         )}
 
-        {/* 4. LANGUAGE CATEGORY FOLDERS */}
+        {/* FOLDERS */}
         <section className="space-y-3">
           <h3 className="text-sm font-bold text-gray-400 tracking-wider uppercase">Select Language / Category Folder:</h3>
           <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-none scroll-smooth">
@@ -256,7 +257,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 5. ALL CHANNELS GRID (SERIAL NUMBER ORDER) */}
+        {/* CHANNELS GRID */}
         <section className="space-y-4">
           <div className="flex justify-between items-center border-b border-gray-800/80 pb-3">
             <h3 className="text-lg font-bold text-white tracking-wide">Live Channels ({filteredChannels.length})</h3>
@@ -271,12 +272,10 @@ export default function Home() {
                 tabIndex={0}
                 className="group relative bg-gradient-to-b from-gray-900 to-[#0e121a] border border-gray-800/90 rounded-2xl p-3 cursor-pointer transition-all duration-200 hover:border-red-500 focus:border-red-500 focus:outline-none hover:-translate-y-1 shadow-md hover:shadow-red-600/20 flex flex-col items-center text-center"
               >
-                {/* Serial Badge */}
                 <span className="absolute top-2 left-2 bg-black/80 backdrop-blur-md text-red-400 font-extrabold text-[10px] px-2 py-0.5 rounded-md border border-gray-800 z-10">
                   #{channel.serial_no}
                 </span>
 
-                {/* Logo Container */}
                 <div className="w-full h-28 bg-black/40 rounded-xl flex items-center justify-center p-2 mb-3 border border-gray-800/50 group-hover:border-red-500/40 transition">
                   {channel.logo_url ? (
                     <img 
@@ -291,8 +290,7 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* Channel Name & Category */}
-                <h4 className="text-sm font-bold text-gray-200 group-hover:text-red-400 transition truncate w-full">
+                <h4 className="text-sm font-semibold text-gray-200 group-hover:text-red-400 transition truncate w-full">
                   {channel.name}
                 </h4>
                 <p className="text-[11px] text-gray-500 font-medium truncate w-full mt-0.5">
@@ -306,4 +304,5 @@ export default function Home() {
       </main>
     </div>
   );
-}
+          }
+            
