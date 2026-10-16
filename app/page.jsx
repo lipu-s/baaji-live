@@ -22,7 +22,22 @@ export default function Home() {
     if (data) setChannels(data);
   }
 
-  const playChannel = (channel) => {
+  const getYoutubeEmbedUrl = (url) => {
+    if (url.includes('youtube.com/watch?v=')) {
+      const videoId = url.split('v=')[1]?.split('&')[0];
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    }
+    if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    }
+    if (url.includes('youtube.com/embed/')) {
+      return url;
+    }
+    return null;
+  };
+
+  const playChannel = async (channel) => {
     setCurrentStream(channel);
     
     if (channel.group_id) {
@@ -32,13 +47,31 @@ export default function Home() {
       setMultiServers([]);
     }
 
+    const url = channel.stream_url;
+
+    // Clear Previous Streams
     if (videoRef.current) {
-      if (Hls.isSupported()) {
+      videoRef.current.src = '';
+    }
+
+    const ytUrl = getYoutubeEmbedUrl(url);
+
+    if (!ytUrl && videoRef.current) {
+      // DASH Stream (.mpd)
+      if (url.includes('.mpd')) {
+        const dashjs = (await import('dashjs')).default;
+        const player = dashjs.MediaPlayer().create();
+        player.initialize(videoRef.current, url, true);
+      } 
+      // HLS Stream (.m3u8)
+      else if (url.includes('.m3u8') && Hls.isSupported()) {
         const hls = new Hls();
-        hls.loadSource(channel.stream_url);
+        hls.loadSource(url);
         hls.attachMedia(videoRef.current);
-      } else {
-        videoRef.current.src = channel.stream_url;
+      } 
+      // Direct Native Play
+      else {
+        videoRef.current.src = url;
       }
     }
   };
@@ -49,6 +82,7 @@ export default function Home() {
     : channels.filter(c => c.language === selectedLanguage);
 
   const highlighted = channels.filter(c => c.is_highlighted);
+  const ytEmbedUrl = currentStream ? getYoutubeEmbedUrl(currentStream.stream_url) : null;
 
   return (
     <div className="p-4 max-w-7xl mx-auto pb-20">
@@ -60,12 +94,22 @@ export default function Home() {
 
       {/* Video Player Section */}
       <div className="bg-black rounded-2xl overflow-hidden shadow-2xl mb-6 border border-gray-800">
-        <video 
-          ref={videoRef} 
-          controls 
-          autoPlay 
-          className="w-full aspect-video object-contain bg-black"
-        ></video>
+        {ytEmbedUrl ? (
+          <iframe
+            src={ytEmbedUrl}
+            className="w-full aspect-video border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        ) : (
+          <video 
+            ref={videoRef} 
+            controls 
+            autoPlay 
+            className="w-full aspect-video object-contain bg-black"
+          ></video>
+        )}
+
         {currentStream && (
           <div className="p-4 bg-slate-900 flex justify-between items-center">
             <div>
@@ -160,5 +204,4 @@ export default function Home() {
       </div>
     </div>
   );
-  }
-        
+}
