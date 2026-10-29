@@ -1,1 +1,213 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090b12">
+<meta name="description" content="Discover live TV channels from around the world.">
+<title>BK TV — Live Beyond Borders</title>
+<link rel="preconnect" href="https://iptv-org.github.io">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+:root{color-scheme:dark;--bg:#090b12;--panel:#111521;--panel2:#171c2b;--text:#f5f7ff;--muted:#8d96ab;--line:rgba(255,255,255,.085);--pink:#ff4d8d;--violet:#8b6cff;--cyan:#54d9ef;--green:#48e0a4;--radius:22px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 12% -10%,rgba(94,63,180,.22),transparent 34%),radial-gradient(ellipse at 95% 10%,rgba(255,77,141,.10),transparent 30%),var(--bg);color:var(--text);font-family:"DM Sans",system-ui,sans-serif;min-height:100vh}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.app{max-width:1500px;margin:auto;padding:0 28px 60px}.topbar{height:82px;display:flex;align-items:center;gap:26px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;background:rgba(9,11,18,.82);backdrop-filter:blur(20px)}.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);flex-shrink:0}.brandmark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--violet) 65%,var(--cyan));display:grid;place-items:center;box-shadow:0 8px 28px #8b6cff33;font-weight:800;font-family:"Space Grotesk";font-size:21px}.brandname{font:700 22px "Space Grotesk";letter-spacing:-.8px}.brandname span{color:var(--pink)}.nav{display:flex;gap:22px;align-items:center}.nav button{background:none;border:0;color:var(--muted);font-weight:600;padding:10px 0}.nav button.active,.nav button:hover{color:white}.nav button.active:after{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--pink),var(--violet));border-radius:8px;margin-top:8px}.searchbox{margin-left:auto;position:relative;width:min(310px,27vw)}.searchbox span{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px}.searchbox input{width:100%;border:1px solid var(--line);background:#ffffff08;border-radius:15px;padding:12px 14px 12px 42px;color:white;outline:none}.searchbox input:focus{border-color:#8b6cff99}.iconbtn{width:44px;height:44px;border-radius:15px;border:1px solid var(--line);background:#ffffff08;color:white;font-size:18px;flex-shrink:0}.iconbtn:hover{background:#ffffff15}.hero{margin:28px 0 34px;min-height:340px;border-radius:30px;position:relative;overflow:hidden;display:flex;align-items:center;padding:clamp(28px,5vw,68px);background:linear-gradient(100deg,rgba(11,13,24,.98) 5%,rgba(11,13,24,.84) 47%,rgba(11,13,24,.1) 100%),radial-gradient(ellipse at 78% 45%,#a03d9c 0%,#4e317d 23%,#182c58 48%,#121728 75%);border:1px solid #ffffff12}.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(1px);pointer-events:none}.hero:before{width:330px;height:330px;right:9%;top:-42px;border:1px solid #ffffff25;box-shadow:0 0 0 35px #ffffff08,0 0 0 75px #ffffff05}.hero:after{width:220px;height:220px;right:14%;top:12%;background:linear-gradient(135deg,#ff4d8d99,#8b6cff55);filter:blur(50px)}.hero-content{position:relative;z-index:1;max-width:600px}.eyebrow{display:inline-flex;align-items:center;gap:9px;color:#ffb6d0;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800}.eyebrow i,.live-dot{width:7px;height:7px;border-radius:50%;background:var(--pink);box-shadow:0 0 0 5px #ff4d8d22;animation:pulse 1.7s infinite}.hero h1{font:700 clamp(36px,5.1vw,64px)/1.02 "Space Grotesk";letter-spacing:-2.8px;margin:20px 0 16px}.hero h1 span{background:linear-gradient(90deg,#ff6da4,#b49aff,#70e9f5);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:#b6bdd0;line-height:1.7;max-width:470px;margin:0 0 25px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.primary,.secondary{border:0;border-radius:14px;padding:13px 19px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:transform .2s,filter .2s}.primary{background:linear-gradient(100deg,var(--pink),#a15fff);color:white;box-shadow:0 9px 28px #ff4d8d26}.secondary{background:#ffffff12;color:white;border:1px solid #ffffff1a}.primary:hover,.secondary:hover{transform:translateY(-2px);filter:brightness(1.1)}.hero-stats{display:flex;gap:25px;margin-top:28px;color:#a8b0c4;font-size:12px}.hero-stats strong{color:white;font-size:15px;display:block;margin-bottom:3px}.sectionhead{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 0 17px}.sectionhead h2{font:700 24px "Space Grotesk";letter-spacing:-.7px;margin:0}.sectionhead p{margin:6px 0 0;color:var(--muted);font-size:13px}.count{font-size:12px;color:var(--muted);white-space:nowrap}.filters{display:flex;align-items:center;gap:9px;margin-bottom:23px;overflow-x:auto;padding:2px 1px 8px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.chip{white-space:nowrap;border:1px solid var(--line);background:#ffffff06;color:#aeb6c9;border-radius:999px;padding:9px 15px;font-size:12px;font-weight:700;transition:.2s}.chip:hover{background:#ffffff12;color:white}.chip.active{background:linear-gradient(100deg,#ff4d8d24,#8b6cff2c);border-color:#b28aff88;color:white}.filterselect{border:1px solid var(--line);background:#141827;color:#dfe4f2;border-radius:999px;padding:9px 14px;max-width:190px;font-size:12px;outline:none}.statusline{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin:-5px 0 18px}.statusline .live-dot{width:6px;height:6px}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:17px}.card{min-width:0;background:linear-gradient(145deg,#151a29,#10131d);border:1px solid var(--line);border-radius:19px;overflow:hidden;position:relative;cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s;animation:rise .45s both}.card:hover{transform:translateY(-5px);border-color:#9b82ff70;box-shadow:0 15px 35px #0005}.card-art{height:145px;position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 100%,#4b347a55,transparent 60%),linear-gradient(145deg,#1c2234,#111521);overflow:hidden}.card-art:before{content:"";position:absolute;width:130px;height:130px;border:1px solid #ffffff10;border-radius:50%;box-shadow:0 0 0 20px #ffffff04,0 0 0 40px #ffffff03}.logo{position:relative;z-index:1;max-width:66%;max-height:74px;object-fit:contain;filter:drop-shadow(0 6px 12px #0006);transition:transform .3s}.card:hover .logo{transform:scale(1.08)}.fallback{width:68px;height:68px;border-radius:22px;display:grid;place-items:center;font:700 22px "Space Grotesk";background:linear-gradient(135deg,var(--pink),var(--violet));box-shadow:0 10px 28px #0005}.livebadge{position:absolute;left:11px;top:11px;display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:7px;background:#e83e6b;color:white;font-size:9px;font-weight:900;letter-spacing:.8px}.livebadge .live-dot{width:5px;height:5px;background:white;box-shadow:0 0 0 3px #ffffff30}.fav{position:absolute;right:9px;top:9px;width:31px;height:31px;border:1px solid #ffffff25;background:#090b1288;backdrop-filter:blur(8px);border-radius:50%;color:white;font-size:16px;z-index:2}.fav.saved{color:#ff669d;border-color:#ff669d66;background:#ff4d8d20}.cardbody{padding:13px 13px 15px}.cardtitle{display:flex;align-items:center;gap:7px;min-width:0}.cardtitle h3{font-size:13px;line-height:1.35;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800}.flag{font-size:15px;flex-shrink:0}.cardmeta{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:10px;color:var(--muted);font-size:10px}.categorylabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#ffffff0a;padding:5px 8px;border-radius:7px;max-width:75%}.quality{color:#9fa8bc}.skeleton{height:224px;border-radius:19px;border:1px solid var(--line);background:linear-gradient(100deg,#151a29 20%,#20263a 40%,#151a29 60%);background-size:200% 100%;animation:shimmer 1.4s infinite}.empty{grid-column:1/-1;text-align:center;padding:65px 20px;background:#ffffff04;border:1px dashed #ffffff20;border-radius:20px;color:var(--muted)}.empty b{display:block;color:white;font-size:19px;margin-bottom:8px}.loadmore{display:block;margin:30px auto 0}.footer{border-top:1px solid var(--line);margin-top:55px;padding-top:22px;display:flex;justify-content:space-between;gap:15px;color:#727c92;font-size:11px;line-height:1.7}.footer strong{color:#b8c0d2}.player{position:fixed;inset:0;z-index:50;background:#05060bf2;backdrop-filter:blur(22px);display:none;align-items:center;justify-content:center;padding:22px;opacity:0;transition:opacity .25s}.player.open{display:flex}.player.visible{opacity:1}.playerbox{width:min(1050px,100%);background:#10131e;border:1px solid #ffffff18;border-radius:25px;overflow:hidden;box-shadow:0 30px 100px #000b;transform:translateY(14px) scale(.985);transition:transform .3s}.player.visible .playerbox{transform:none}.playerhead{display:flex;align-items:center;gap:13px;padding:16px 19px}.playerlogo{width:43px;height:43px;object-fit:contain;background:#ffffff08;border-radius:12px;padding:5px}.playername{min-width:0;flex:1}.playername h2{font:700 17px "Space Grotesk";margin:0 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.playername small{color:var(--muted);font-size:11px}.close{border:1px solid var(--line);background:#ffffff0a;color:white;width:39px;height:39px;border-radius:13px;font-size:22px}.videowrap{background:#000;aspect-ratio:16/9;position:relative;display:grid;place-items:center}.videowrap video{width:100%;height:100%;object-fit:contain;background:#000}.playerstate{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px;background:#05060bcc;color:#d6dbea;line-height:1.6;pointer-events:none}.playerstate.hidden{display:none}.playerstate strong{display:block;color:white;font-size:19px;margin-bottom:7px}.playerfoot{padding:14px 19px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px}.playerfoot .qualitypill{border:1px solid #ffffff1a;background:#ffffff08;border-radius:8px;padding:6px 9px;color:#d6dbea}.playerfoot .spacer{flex:1}.textbtn{border:1px solid #ffffff1a;background:#ffffff08;color:#e7eaf4;border-radius:10px;padding:8px 11px;font-size:11px}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:#20263a;border:1px solid #ffffff20;color:white;padding:12px 18px;border-radius:13px;box-shadow:0 12px 35px #0008;z-index:100;font-size:13px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.smallnote{font-size:11px;color:#778198;line-height:1.6;margin-top:18px}@keyframes pulse{0%,100%{box-shadow:0 0 0 4px #ff4d8d20}50%{box-shadow:0 0 0 8px #ff4d8d08}}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmer{to{background-position:-200% 0}}
+@media(max-width:1150px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.card-art{height:135px}.nav{gap:14px}}
+@media(max-width:850px){.app{padding:0 17px 45px}.topbar{height:72px;gap:14px}.nav{display:none}.searchbox{width:min(330px,45vw)}.hero{min-height:315px;padding:34px 27px}.hero:before{right:-75px}.hero:after{right:-20px}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card-art{height:130px}.sectionhead h2{font-size:22px}}
+@media(max-width:560px){.app{padding:0 12px 35px}.topbar{height:66px;gap:10px}.brandmark{width:37px;height:37px;border-radius:12px;font-size:18px}.brandname{font-size:19px}.searchbox{width:auto;flex:1}.searchbox input{padding:10px 10px 10px 35px;font-size:12px;border-radius:12px}.searchbox span{left:11px;font-size:15px}.iconbtn{width:38px;height:38px;border-radius:12px}.hero{margin:17px 0 27px;min-height:355px;padding:29px 22px;border-radius:23px;background:linear-gradient(90deg,rgba(11,13,24,.96),rgba(11,13,24,.68)),radial-gradient(ellipse at 80% 25%,#a03d9c,#4e317d 35%,#182c58 70%)}.hero h1{font-size:43px;letter-spacing:-2px;margin:17px 0 12px}.hero p{font-size:13px;max-width:310px}.hero:before{right:-160px;top:55px}.hero:after{right:-120px;top:80px}.hero-stats{gap:19px;margin-top:22px}.hero-stats strong{font-size:14px}.sectionhead h2{font-size:20px}.sectionhead p{font-size:11px}.filters{margin-bottom:17px;gap:7px}.chip{padding:8px 12px}.filterselect{max-width:150px;padding:8px 10px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{border-radius:16px}.card-art{height:126px}.cardbody{padding:11px 10px 12px}.cardtitle h3{font-size:12px}.cardmeta{margin-top:8px}.fallback{width:59px;height:59px;font-size:19px}.livebadge{left:8px;top:8px;font-size:8px}.fav{right:7px;top:7px;width:28px;height:28px}.footer{flex-direction:column;margin-top:38px}.player{padding:10px}.playerbox{border-radius:18px}.playerhead{padding:12px}.playername h2{font-size:14px}.videowrap{aspect-ratio:16/10}.playerfoot{padding:12px}.hero-actions button{padding:12px 14px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <a class="brand" href="#" aria-label="BK TV home"><span class="brandmark">B</span><span class="brandname">BK <span>TV</span></span></a>
+  <nav class="nav" aria-label="Main navigation"><button class="active" data-view="discover">Discover</button><button data-view="popular">Popular</button><button data-view="favorites">♥ Saved</button></nav>
+  <label class="searchbox"><span>⌕</span><input id="search" type="search" placeholder="Search channels..." autocomplete="off" aria-label="Search channels"></label>
+  <button class="iconbtn" id="reload" title="Refresh channel data" aria-label="Refresh">↻</button>
+</header>
+
+<section class="hero">
+ <div class="hero-content">
+  <div class="eyebrow"><i></i> YOUR WORLD, LIVE</div>
+  <h1>Feel the world.<br><span>Watch it live.</span></h1>
+  <p>From breaking news to the big game, find the voices, stories and moments happening around the planet — all in one place.</p>
+  <div class="hero-actions"><button class="primary" id="explore">▶ &nbsp; Explore live channels</button><button class="secondary" id="heroRandom">✦ &nbsp; Surprise me</button></div>
+  <div class="hero-stats"><div><strong id="channelStat">—</strong>Channels discovered</div><div><strong id="countryStat">—</strong>Countries</div><div><strong id="streamStat">—</strong>Playable feeds</div></div>
+ </div>
+</section>
+
+<section id="discoverSection">
+ <div class="sectionhead"><div><h2 id="sectionTitle">Discover live</h2><p id="sectionSubtitle">A world of channels, ready when you are.</p></div><span class="count" id="resultCount">Loading…</span></div>
+ <div class="filters" id="categoryFilters" aria-label="Filter by category"><button class="chip active" data-category="all">✦ For you</button></div>
+ <div class="filters" style="margin-top:-10px">
+  <select class="filterselect" id="countryFilter" aria-label="Filter by country"><option value="all">🌍 All countries</option></select>
+  <select class="filterselect" id="sortFilter" aria-label="Sort channels"><option value="recommended">Recommended</option><option value="az">Name A–Z</option><option value="country">Country</option><option value="quality">Best stream quality</option></select>
+  <button class="chip" id="clearFilters">Clear filters</button>
+ </div>
+ <div class="statusline"><i class="live-dot"></i><span id="statusText">Connecting to the live channel directory…</span></div>
+ <div class="grid" id="channelGrid" aria-live="polite"></div>
+ <button class="primary loadmore" id="loadMore" style="display:none">Load more channels ↓</button>
+ <p class="smallnote">Streams are provided by public directory data. Availability, playback and viewing rights depend on each stream provider and your location.</p>
+</section>
+<footer class="footer"><div><strong>BK TV</strong> · Live beyond borders.</div><div>Independent channel discovery · Stream availability may vary.</div></footer>
+</div>
+
+<div class="player" id="player" role="dialog" aria-modal="true" aria-label="Live channel player">
+ <div class="playerbox">
+  <div class="playerhead"><img class="playerlogo" id="playerLogo" alt=""><div class="playername"><h2 id="playerTitle">Live channel</h2><small id="playerMeta">🔴 LIVE · Connecting…</small></div><button class="close" id="closePlayer" aria-label="Close player">×</button></div>
+  <div class="videowrap"><video id="video" controls autoplay playsinline></video><div class="playerstate" id="playerState"><div><strong>Preparing your stream…</strong>Please wait while BK TV connects.</div></div></div>
+  <div class="playerfoot"><span class="live-dot"></span><span>LIVE</span><span class="qualitypill" id="playerQuality">Quality: Auto</span><span class="spacer"></span><button class="textbtn" id="openStream">Open stream ↗</button><button class="textbtn" id="copyStream">Copy stream URL</button></div>
+ </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+'use strict';
+const API = {
+ channels:'https://iptv-org.github.io/api/channels.json',
+ streams:'https://iptv-org.github.io/api/streams.json',
+ logos:'https://iptv-org.github.io/api/logos.json',
+ categories:'https://iptv-org.github.io/api/categories.json',
+ countries:'https://iptv-org.github.io/api/countries.json'
+};
+const $ = id => document.getElementById(id);
+const state = {channels:[],streams:[],logos:[],categories:[],countries:[],view:'discover',category:'all',country:'all',search:'',sort:'recommended',limit:40,current:null,hls:null};
+const favKey='bktv-favorites-v1';
+const favorites = new Set(safeReadFavorites());
+function safeReadFavorites(){try{return JSON.parse(localStorage.getItem(favKey)||'[]')}catch(_){return []}}
+function saveFavorites(){try{localStorage.setItem(favKey,JSON.stringify([...favorites]))}catch(_){}}
+function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function initials(name){return (String(name||'?').replace(/[^A-Za-z0-9 ]/g,' ').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'?')}
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)}
+function countryInfo(code){return state.countries.find(c=>c.code===code)||{name:code||'Unknown country',flag:'🌐'}}
+function categoryNames(channel){return (channel.categories||[]).map(id=>state.categories.find(c=>c.id===id)?.name||id).filter(Boolean)}
+function bestLogo(id){const found=state.logos.filter(l=>l.channel===id&&l.url).sort((a,b)=>logoScore(b)-logoScore(a))[0];return found?.url||''}
+function logoScore(l){return (/svg|png/i.test(l.format||'')?10:0)+(l.tags?.includes('horizontal')?2:0)+(l.width||0)/10000}
+function streamScore(s){const q=String(s.quality||'').match(/(\d{3,4})p/i);return (q?Number(q[1]):0)+(s.referrer?0:10000)}
+function streamsFor(id){return state.streams.filter(s=>s.channel===id&&s.url&&/^https?:\/\//i.test(s.url)).sort((a,b)=>streamScore(b)-streamScore(a))}
+function channelData(ch){return {...ch,streamList:streamsFor(ch.id),logo:bestLogo(ch.id),countryInfo:countryInfo(ch.country),categoryText:categoryNames(ch)[0]||'General'}}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),2600)}
+function setStatus(msg){$('statusText').textContent=msg}
+function skeletons(n=15){$('channelGrid').innerHTML=Array.from({length:n},()=>'<div class="skeleton"></div>').join('')}
+async function fetchJSON(url){const res=await fetch(url,{cache:'no-cache'});if(!res.ok)throw new Error('HTTP '+res.status+' for '+url);return res.json()}
+async function loadData(){
+ $('reload').disabled=true;$('reload').textContent='…';setStatus('Loading global channel data…');skeletons();
+ const entries=Object.entries(API);
+ const results=await Promise.allSettled(entries.map(async ([key,url])=>[key,await fetchJSON(url)]));
+ let success=0,errors=[];
+ results.forEach((r,i)=>{if(r.status==='fulfilled'){state[ r.value[0] ]=r.value[1];success++}else errors.push(entries[i][0])});
+ if(state.channels.length)state.channels=state.channels.filter(c=>c&&c.id&&c.name&&c.is_nsfw!==true);
+ if(state.streams.length)state.streams=state.streams.filter(s=>s&&s.channel&&s.url);
+ if(state.logos.length)state.logos=state.logos.filter(l=>l&&l.channel&&l.url);
+ $('channelStat').textContent=state.channels.length?state.channels.length.toLocaleString():'—';
+ $('countryStat').textContent=state.countries.length?new Set(state.channels.map(c=>c.country).filter(Boolean)).size.toLocaleString():'—';
+ $('streamStat').textContent=state.streams.length?state.streams.length.toLocaleString():'—';
+ if(state.channels.length){
+   buildFilters();setStatus(errors.length?'Some data sources failed ('+errors.join(', ')+'); showing available data.':`${state.channels.length.toLocaleString()} channels loaded · ${state.streams.length.toLocaleString()} stream feeds indexed.`);
+   render();
+ }else{
+   $('channelGrid').innerHTML='<div class="empty"><b>We couldn’t reach the channel directory</b>Check your internet connection, then tap refresh. Some hosts or browsers may block requests.</div>';
+   $('resultCount').textContent='No data';setStatus('The API data could not be loaded.');toast('Could not load channel data. Please try again.');
+ }
+ $('reload').disabled=false;$('reload').textContent='↻';
+}
+function buildFilters(){
+ const cats=new Map();state.channels.forEach(c=>(c.categories||[]).forEach(id=>cats.set(id,(cats.get(id)||0)+1)));
+ const popular=[...cats.entries()].sort((a,b)=>b[1]-a[1]).slice(0,14);
+ $('categoryFilters').innerHTML='<button class="chip '+(state.category==='all'?'active':'')+'" data-category="all">✦ For you</button>'+popular.map(([id])=>`<button class="chip ${state.category===id?'active':''}" data-category="${escapeHTML(id)}">${escapeHTML(state.categories.find(c=>c.id===id)?.name||id)}</button>`).join('');
+ $('countryFilter').innerHTML='<option value="all">🌍 All countries</option>'+state.countries.filter(c=>state.channels.some(ch=>ch.country===c.code)).sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`<option value="${escapeHTML(c.code)}">${escapeHTML(c.flag||'🌐')} ${escapeHTML(c.name)}</option>`).join('');
+ $('categoryFilters').querySelectorAll('[data-category]').forEach(btn=>btn.addEventListener('click',()=>{state.category=btn.dataset.category;state.limit=40;buildFilters();render()}));
+}
+function filteredChannels(){
+ let arr=state.channels.filter(c=>{
+   if(state.category!=='all'&&!(c.categories||[]).includes(state.category))return false;
+   if(state.country!=='all'&&c.country!==state.country)return false;
+   if(state.view==='favorites'&&!favorites.has(c.id))return false;
+   const q=state.search.toLowerCase().trim();
+   if(q){const hay=[c.name,c.id,c.network,c.country,countryInfo(c.country).name,...(c.alt_names||[]),...categoryNames(c)].join(' ').toLowerCase();if(!hay.includes(q))return false}
+   return true;
+ });
+ if(state.sort==='az')arr.sort((a,b)=>a.name.localeCompare(b.name));
+ else if(state.sort==='country')arr.sort((a,b)=>countryInfo(a.country).name.localeCompare(countryInfo(b.country).name)||a.name.localeCompare(b.name));
+ else if(state.sort==='quality')arr.sort((a,b)=>(streamsFor(b.id)[0]?streamScore(streamsFor(b.id)[0]):-1)-(streamsFor(a.id)[0]?streamScore(streamsFor(a.id)[0]):-1));
+ else arr.sort((a,b)=>Number(streamsFor(b.id).length>0)-Number(streamsFor(a.id).length>0)||a.name.localeCompare(b.name));
+ return arr;
+}
+function render(){
+ const arr=filteredChannels();const visible=arr.slice(0,state.limit);
+ $('sectionTitle').textContent=state.view==='favorites'?'Your saved channels':state.view==='popular'?'Popular right now':'Discover live';
+ $('sectionSubtitle').textContent=state.view==='favorites'?'Your personal collection, all in one place.':state.view==='popular'?'Channels with playable streams, ready to explore.':'A world of channels, ready when you are.';
+ $('resultCount').textContent=`${arr.length.toLocaleString()} channel${arr.length===1?'':'s'}`;
+ if(!visible.length){$('channelGrid').innerHTML=`<div class="empty"><b>${state.view==='favorites'?'No saved channels yet':'No channels found'}</b>${state.view==='favorites'?'Tap the heart on any channel to keep it close.':'Try another search or clear your filters.'}</div>`;$('loadMore').style.display='none';return}
+ $('channelGrid').innerHTML=visible.map((c,i)=>{
+  const logo=bestLogo(c.id), country=countryInfo(c.country), cats=categoryNames(c), playable=streamsFor(c.id).length>0;
+  const bg=hash(c.id)%360;
+  return `<article class="card" data-id="${escapeHTML(c.id)}" tabindex="0" role="button" aria-label="Watch ${escapeHTML(c.name)}" style="animation-delay:${Math.min(i%20,12)*22}ms">
+   <div class="card-art" style="background:radial-gradient(ellipse at 50% 100%,hsla(${bg},65%,55%,.22),transparent 65%),linear-gradient(145deg,#1c2234,#111521)">
+    <span class="livebadge"><i class="live-dot"></i>${playable?'LIVE':'DIRECTORY'}</span>
+    <button class="fav ${favorites.has(c.id)?'saved':''}" data-fav="${escapeHTML(c.id)}" aria-label="${favorites.has(c.id)?'Remove from':'Add to'} favorites" title="Save channel">${favorites.has(c.id)?'♥':'♡'}</button>
+    ${logo?`<img class="logo" src="${escapeHTML(logo)}" alt="" loading="lazy" onerror="this.replaceWith(makeFallback('${escapeHTML(initials(c.name))}',${bg}))">`:`<span class="fallback" style="background:linear-gradient(135deg,hsl(${bg},75%,56%),hsl(${(bg+75)%360},70%,42%))">${escapeHTML(initials(c.name))}</span>`}
+   </div>
+   <div class="cardbody"><div class="cardtitle"><span class="flag" title="${escapeHTML(country.name)}">${escapeHTML(country.flag||'🌐')}</span><h3 title="${escapeHTML(c.name)}">${escapeHTML(c.name)}</h3></div>
+   <div class="cardmeta"><span class="categorylabel">${escapeHTML(cats[0]?state.categories.find(x=>x.id===cats[0])?.name||cats[0]:'General')}</span><span class="quality">${playable?escapeHTML(streamsFor(c.id)[0].quality||'HD'):'—'}</span></div></div>
+  </article>`;
+ }).join('');
+ $('loadMore').style.display=arr.length>state.limit?'block':'none';
+ $('channelGrid').querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('click',e=>{if(e.target.closest('[data-fav]'))return;openPlayer(card.dataset.id)});
+  card.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target===card){e.preventDefault();openPlayer(card.dataset.id)}});
+ });
+ $('channelGrid').querySelectorAll('[data-fav]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const id=btn.dataset.fav;if(favorites.has(id))favorites.delete(id);else favorites.add(id);saveFavorites();render();toast(favorites.has(id)?'Added to your saved channels':'Removed from saved channels')}));
+}
+window.makeFallback=(text,hue)=>{const el=document.createElement('span');el.className='fallback';el.style.background=`linear-gradient(135deg,hsl(${hue},75%,56%),hsl(${(hue+75)%360},70%,42%))`;el.textContent=text;return el};
+function stopPlayback(){if(state.hls){state.hls.destroy();state.hls=null}const v=$('video');v.pause();v.removeAttribute('src');v.load()}
+function playerState(title,body){$('playerState').classList.remove('hidden');$('playerState').innerHTML=`<div><strong>${escapeHTML(title)}</strong>${escapeHTML(body)}</div>`}
+function openPlayer(id){
+ const ch=state.channels.find(c=>c.id===id);if(!ch)return;state.current=ch;
+ $('playerTitle').textContent=ch.name;$('playerLogo').src=bestLogo(id)||'';$('playerLogo').style.visibility=bestLogo(id)?'visible':'hidden';
+ const ci=countryInfo(ch.country);$('playerMeta').textContent=`${ci.flag||'🌐'} ${ci.name} · 🔴 LIVE`;
+ const streams=streamsFor(id);$('playerQuality').textContent='Quality: '+(streams[0]?.quality||'Auto');
+ $('openStream').disabled=!streams.length;$('copyStream').disabled=!streams.length;
+ $('player').classList.add('open');requestAnimationFrame(()=>$('player').classList.add('visible'));document.body.style.overflow='hidden';
+ stopPlayback();
+ if(!streams.length){playerState('No playable stream found','This channel is listed in the directory, but no stream URL is currently available. Try another channel.');return}
+ playStream(streams[0],0,streams);
+}
+function playStream(stream,index,all){
+ const v=$('video');playerState('Connecting to live TV…','The stream provider may take a few seconds to respond.');
+ $('playerQuality').textContent='Quality: '+(stream.quality||'Auto');
+ if(/\.m3u8(?:$|[?#])/i.test(stream.url)){
+   if(v.canPlayType('application/vnd.apple.mpegurl')){v.src=stream.url;v.play().then(()=> $('playerState').classList.add('hidden')).catch(()=>playerState('Playback needs a tap','Press play in the video controls, or try another stream.'));v.onplaying=()=> $('playerState').classList.add('hidden');v.onerror=()=>retryOrFail(index,all);return}
+   if(window.Hls&&Hls.isSupported()){
+    state.hls=new Hls({enableWorker:true,lowLatencyMode:true,backBufferLength:30});state.hls.loadSource(stream.url);state.hls.attachMedia(v);
+    state.hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().then(()=> $('playerState').classList.add('hidden')).catch(()=>playerState('Ready to play','Press play in the video controls to start watching.')));
+    state.hls.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal)retryOrFail(index,all)});v.onplaying=()=> $('playerState').classList.add('hidden');return;
+   }
+ }
+ v.src=stream.url;v.play().then(()=> $('playerState').classList.add('hidden')).catch(()=>playerState('Stream could not start','Your browser or this provider may not support this format. Try another feed or open the stream directly.'));v.onplaying=()=> $('playerState').classList.add('hidden');v.onerror=()=>retryOrFail(index,all);
+}
+function retryOrFail(index,all){if(index+1<all.length){toast('Trying another stream…');stopPlayback();playStream(all[index+1],index+1,all)}else playerState('This stream is unavailable','The provider may be offline or block browser playback. Try “Open stream” or choose another channel.')}
+function closePlayer(){ $('player').classList.remove('visible');setTimeout(()=>$('player').classList.remove('open'),250);stopPlayback();document.body.style.overflow='';state.current=null}
+$('closePlayer').addEventListener('click',closePlayer);
+$('player').addEventListener('click',e=>{if(e.target===$('player'))closePlayer()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('player').classList.contains('open'))closePlayer()});
+$('openStream').addEventListener('click',()=>{const s=state.current&&streamsFor(state.current.id)[0];if(s)window.open(s.url,'_blank','noopener,noreferrer')});
+$('copyStream').addEventListener('click',async()=>{const s=state.current&&streamsFor(state.current.id)[0];if(!s)return;try{await navigator.clipboard.writeText(s.url);toast('Stream URL copied')}catch(_){toast('Clipboard unavailable in this browser')}});
+$('search').addEventListener('input',e=>{state.search=e.target.value;state.limit=40;render()});
+$('countryFilter').addEventListener('change',e=>{state.country=e.target.value;state.limit=40;render()});
+$('sortFilter').addEventListener('change',e=>{state.sort=e.target.value;state.limit=40;render()});
+$('clearFilters').addEventListener('click',()=>{state.category='all';state.country='all';state.search='';state.sort='recommended';state.limit=40;$('search').value='';$('countryFilter').value='all';$('sortFilter').value='recommended';buildFilters();render()});
+$('loadMore').addEventListener('click',()=>{state.limit+=40;render()});
+$('explore').addEventListener('click',()=>$('discoverSection').scrollIntoView({behavior:'smooth'}));
+$('heroRandom').addEventListener('click',()=>{const available=state.channels.filter(c=>streamsFor(c.id).length);if(!available.length){toast('No playable streams loaded yet');return}openPlayer(available[Math.floor(Math.random()*available.length)].id)});
+$('reload').addEventListener('click',loadData);
+document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{state.view=btn.dataset.view;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b===btn));render();$('discoverSection').scrollIntoView({behavior:'smooth',block:'start'})}));
+loadData();
+})();
+</script>
+</body>
+</html>
